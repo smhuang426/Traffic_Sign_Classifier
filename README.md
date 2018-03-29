@@ -16,11 +16,8 @@ The goals / steps of this project are the following:
 [image1]: ./examples/bar_chart.png "Visualization"
 [image2]: ./examples/before_data_agu.png "Before data agument"
 [image3]: ./examples/after_data_aug.png "After data augument"
-[image4]: ./examples/placeholder.png "Traffic Sign 1"
-[image5]: ./examples/placeholder.png "Traffic Sign 2"
-[image6]: ./examples/placeholder.png "Traffic Sign 3"
-[image7]: ./examples/placeholder.png "Traffic Sign 4"
-[image8]: ./examples/placeholder.png "Traffic Sign 5"
+[image4]: ./examples/ChoosenImage.png "Choosen Image"
+[image5]: ./examples/KernelImage.png "Kernel Image"
 
 ## Rubric Points
 ### Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/481/view) individually and describe how I addressed each point in my implementation.  
@@ -60,12 +57,16 @@ Here is an exploratory visualization of the data set. It is a bar chart showing 
 with histogram equalization : ~91%
 without histogram equalization : ~93%
 
+in 16 epochs
+
 No histogram equalization is better, but I cannot figure out why, because I thought histogram equalization is doing normalization. So I quit this idea.
 
 * About normalization, I had compared (pixel - 128)/ 128 with pixel/ 256
 
 pixel/ 256 : ~93% accuracy
 (pixel - 128)/ 128 : ~71% accuracy
+
+in 16 epochs
 
 I thought because my acivation function is ReLU function, all of negative value will vanish as zero , so (pixel - 128) will cause negative value and some of infomation will be losing.
 
@@ -108,36 +109,55 @@ My final model consisted of the following layers:
 
 #### 3. Describe how you trained your model. The discussion can include the type of optimizer, the batch size, number of epochs and any hyperparameters such as learning rate.
 
-To train the model, I used an ....
+To train the model, I used an Adam optimizer, batch size = 128, number of epochs:21 and I used learning rate decay because I found that accuracy is shaking when it reach 90% above, so I shrink its step size per 7 epochs so that it can walk stable. Learning rate start with 0.008 . 
 
 #### 4. Describe the approach taken for finding a solution and getting the validation set accuracy to be at least 0.93. Include in the discussion the results on the training, validation and test sets and where in the code these were calculated. Your approach may have been an iterative process, in which case, outline the steps you took to get to the final solution and why you chose those steps. Perhaps your solution involved an already well known implementation or architecture. In this case, discuss why you think the architecture is suitable for the current problem.
 
 My final model results were:
-* training set accuracy of ?
-* validation set accuracy of ? 
-* test set accuracy of ?
+* validation set accuracy of 96.8%
+* test set accuracy of 95.5%
 
 If an iterative approach was chosen:
 * What was the first architecture that was tried and why was it chosen?
+
+Just a normal LeNet-5 
+
 * What were some problems with the initial architecture?
+
+It cannot reach 95%up accuracy in 21 epochs, only 93% accuracy for test set
+
 * How was the architecture adjusted and why was it adjusted? Typical adjustments could include choosing a different model architecture, adding or taking away layers (pooling, dropout, convolution, etc), using an activation function or changing the activation function. One common justification for adjusting an architecture would be due to overfitting or underfitting. A high accuracy on the training set but low accuracy on the validation set indicates over fitting; a low accuracy on both sets indicates under fitting.
+
+Originaly, I use two 5 by 5 convolutional layer, but I thought increase deep of networking that maybe increase accuracy, so I change second convolutional layer to two 3*3 convolutional layer without zero padding, and It's working. 
+
 * Which parameters were tuned? How were they adjusted and why?
-* What are some of the important design choices and why were they chosen? For example, why might a convolution layer work well with this problem? How might a dropout layer help with creating a successful model?
+
+I fine tune learning rate with learning rate decay, it will decay 16% per 7 epochs so that can converge stably.
+
+* What are some of the important design choices and why were they chosen?
+
+I choose x/255 as my normalization instead of ( x -128 )/128, that increase accuracy from 70% to 90%up in 16 epochs, becase I thought my activation function is relu, which will vanish negative value as zero. If I use (x-128)/128, some of information will be lose when start tringing.
 
 If a well known architecture was chosen:
 * What architecture was chosen?
+
+I want to try YOLO.
+
 * Why did you believe it would be relevant to the traffic sign application?
+
+Because we need to find where is traffic sign in pratical application then we classify which sign is. And YOLO is the fastest object detection I'v met. 
+
 * How does the final model's accuracy on the training, validation and test set provide evidence that the model is working well?
  
+Validation set and test set are close each other and up to 95%, so maybe do not have overfitting.
 
 ### Test a Model on New Images
 
-#### 1. Choose five German traffic signs found on the web and provide them in the report. For each image, discuss what quality or qualities might be difficult to classify.
+#### 1. Choose 18 German traffic signs found on the web and provide them in the report. For each image, discuss what quality or qualities might be difficult to classify.
 
-Here are five German traffic signs that I found on the web:
+Here are 18 German traffic signs that I found on the web:
+![alt text][image4]
 
-![alt text][image4] ![alt text][image5] ![alt text][image6] 
-![alt text][image7] ![alt text][image8]
 
 The first image might be difficult to classify because ...
 
@@ -176,4 +196,7 @@ For the second image ...
 ### (Optional) Visualizing the Neural Network (See Step 4 of the Ipython notebook for more details)
 #### 1. Discuss the visual output of your trained network's feature maps. What characteristics did the neural network use to make classifications?
 
+It find feature for every kernel. 
+
+![alt text][image5]
 
